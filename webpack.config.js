@@ -41,6 +41,10 @@ module.exports = {
           exclude: /node_modules/,
           use: ["babel-loader"],
         },
+        {
+          test:/\.(vs|fs)$/i,
+          use: 'raw-loader'
+        }
     ],
   },
   resolve: {

@@ -3,7 +3,6 @@ import * as THREE from 'three';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import ForzaInter from './Hello';
-import { createRoot } from 'react-dom/client';
 import interLogo from './images/inter_milan.png'
 
 const element = document.createElement('div');
@@ -12,12 +11,7 @@ ReactDOM.render(<ForzaInter language='Chinese'/>, element)
 
 const scene = new THREE.Scene();
 
-/*const geometry = new THREE.BoxGeometry( 1, 1, 1 );
-const material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
-const cube = new THREE.Mesh( geometry, material );
-scene.add( cube );*/
-
-
+// 1 ---- Use built-in geometry
 const material = new THREE.MeshBasicMaterial( {
     side: THREE.DoubleSide
  });
@@ -38,14 +32,74 @@ loader.load(
 // const geometry = new THREE.PlaneGeometry(4, 4, 32 );
 const geometry = new THREE.CircleGeometry(3, 32);
 const plane = new THREE.Mesh( geometry, material );
-scene.add( plane );
+/************************* End ***********************/
+
+// 2 --- Use buffer geometry
+const TRIANGLE_NUM = 90;
+const RADIUS = 2;
+const delta = Math.PI * 2 / TRIANGLE_NUM;
+
+let center = new THREE.Vector3(0, 1, 0);
+
+const positions = [];
+const uvs = [];
+for(let i = 0; i < TRIANGLE_NUM; i++) {
+	const angle0 = i * delta;
+	const angle1 = (i + 1) * delta;
+
+	// Point1
+	positions.push(RADIUS * Math.cos(angle0));	
+	positions.push(RADIUS * Math.sin(angle0));
+	positions.push(0);
+	uvs.push(0.5 + 0.48 * Math.cos(angle0));
+	uvs.push(0.5 + 0.48 * Math.sin(angle0));
+
+	// Point2
+	positions.push(RADIUS * Math.cos(angle1));
+	positions.push(RADIUS * Math.sin(angle1));
+	positions.push(0);
+	uvs.push(0.5 + 0.48 * Math.cos(angle1));
+	uvs.push(0.5 + 0.48 * Math.sin(angle1));
+
+	positions.push(0);
+	positions.push(0);
+	positions.push(0);
+	uvs.push(0.5);
+	uvs.push(0.5);
+}
+
+const bufferGeometry = new THREE.BufferGeometry();
+bufferGeometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+bufferGeometry.setAttribute('uv', new THREE.Float32BufferAttribute(uvs, 2));
+
+const uniforms = {
+	logo: { type: "sampler2D", value: new THREE.TextureLoader().load(interLogo) },
+	center: { type: "vec3", value: center }
+}
+
+const shaderMaterial = new THREE.ShaderMaterial({
+	uniforms,
+	vertexShader:  require('./shaders/logo.vs').default,
+	fragmentShader: require('./shaders/logo.fs').default,
+	side: THREE.DoubleSide
+});
+
+const mesh = new THREE.Mesh(bufferGeometry, shaderMaterial);
+/************************* End ***********************/
+
+
+// scene.add( plane );
+scene.add(mesh);
 
 const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
 camera.position.z = 5;
 
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize( window.innerWidth, window.innerHeight );
-//renderer.render( scene, camera );
+
+renderer.domElement.onclick = () => {
+	center.x++;
+}
 
 document.body.appendChild( renderer.domElement );
 
@@ -54,6 +108,18 @@ function renderFrame() {
     window.requestAnimationFrame(renderFrame);
 }
 
+renderFrame();
+
+/** Simple Animation */
+/*
+	let angle = 0;
+	setInterval(() => {
+		center.x = Math.cos(angle);
+		center.y = Math.sin(angle);
+		angle += 0.1;
+	}, 40)
+*/
+/** End */
 
 // const texture = new THREE.TextureLoader().load(interLogo); 
 // immediately use the texture for material creation 
