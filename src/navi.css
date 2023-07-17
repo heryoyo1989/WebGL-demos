@@ -1,0 +1,8 @@
+.Navi {
+    display: flex;
+    flex: 1 1 20px;
+    max-height: 20px;
+    height: 20px;
+    width: 100%;
+    background-color: pink;
+}
