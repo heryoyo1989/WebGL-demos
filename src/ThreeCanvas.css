@@ -1,0 +1,38 @@
+.CanvasContainer {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 100%;
+    width: 100%;
+    max-height: 100%;
+    overflow: hidden;
+    background-color: black;
+    color: white;
+}
+
+.Canvas_Lower {
+    display: flex;
+    flex: 1 1 920px;
+    flex-direction: row;
+    overflow: hidden;
+}
+
+.Canvas_LeftBar {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 100px;
+    background-color: antiquewhite;
+    color: black;
+    width: 200px;
+    height: 100%;
+    min-height: 100%;
+    
+    flex-direction: column;
+    max-width: 200px;
+}
+
+.Canvas {
+    display: flex;
+    flex: 1 1 100%;
+    height: 100%;
+    overflow: hidden;
+}

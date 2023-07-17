@@ -1,10 +1,10 @@
 const path = require('path');
+const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
   entry: {
     index: './src/index.tsx',
-    print: './src/print.js',
   },
   output: {
     filename: '[name].bundle.js',
@@ -13,7 +13,13 @@ module.exports = {
   },
   devtool: 'inline-source-map',
   devServer: {
-    static: './dist'
+    static: './dist',
+    client: {
+      overlay: {
+        errors: true,
+        warnings: false,
+      },
+    },
   },
   plugins: [
     new HtmlWebpackPlugin({
@@ -49,8 +55,5 @@ module.exports = {
   },
   resolve: {
     extensions: [".tsx", ".ts", ".js"],
-  },
-  /*optimization: {
-    runtimeChunk: 'single'
-  }*/
+  }
 };
