@@ -10,10 +10,14 @@ module.exports = {
     filename: '[name].bundle.js',
     path: path.resolve(__dirname, 'dist'),
     clean: true,
+    publicPath: '/',
   },
   devtool: 'inline-source-map',
   devServer: {
     static: './dist',
+    proxy: {
+      '/':'http://localhost:3000'
+    },
     client: {
       overlay: {
         errors: true,
